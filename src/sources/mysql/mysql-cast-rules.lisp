@@ -165,8 +165,8 @@
 
     ;; geometric data types, just POINT for now
     (:source (:type "geometry")
-     :target (:type "point")
-     :using pgloader.transforms::convert-mysql-point)
+     :target (:type "geometry")
+     :using pgloader.transforms::convert-mysql-geometry)
 
     (:source (:type "point")
      :target (:type "point")

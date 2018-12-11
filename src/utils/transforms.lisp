@@ -209,6 +209,19 @@
           (ip-end   (int-to-ip (parse-integer end-integer-string))))
       (concatenate 'simple-base-string ip-start "-" ip-end))))
 
+(defun convert-mysql-geometry (mysql-point-as-string)
+  "Transform the MYSQL-GEOMETRY-AS-STRING into a suitable representation for
+   PostgreSQL.
+
+  Input:   \"POINT(48.5513589 7.6926827)\" ; that's using astext(column)
+  Output:  (48.5513589,7.6926827)"
+  (when mysql-point-as-string
+    (let* ((point (subseq mysql-point-as-string 5)))
+      (setf (aref point (position #\, point)) #\|)
+      (setf (aref point (position #\Space point)) #\,)
+      (setf (aref point (position #\| point)) #\Space)
+      point)))
+
 (defun convert-mysql-point (mysql-point-as-string)
   "Transform the MYSQL-POINT-AS-STRING into a suitable representation for
    PostgreSQL.
@@ -216,7 +229,7 @@
   Input:   \"POINT(48.5513589 7.6926827)\" ; that's using astext(column)
   Output:  (48.5513589,7.6926827)"
   (when mysql-point-as-string
-    (let* ((point (subseq mysql-point-as-string 5)))
+    (let* ((point (subseq mysql-point-as-string (- (position #\( mysql-point-as-string) 1))))
       (setf (aref point (position #\Space point)) #\,)
       point)))
 
